@@ -15,7 +15,15 @@
 class wavetable
 {
 public:
-	wavetable() {}
+	wavetable(int Size, int SampleRate) 
+	{
+		for (int i = 0; i < Size; i++)
+		{
+			Samples.push_back(0);
+		}
+	
+	
+	}
 	~wavetable() {}
 
 
@@ -58,7 +66,7 @@ public:
 		double ret;
 		for (int i = 0; i < BufferSize; i++) 
 		{
-			ret = sin((juce::MathConstants<float>::twoPi * freq) + phase);
+			ret = sin((juce::MathConstants<float>::twoPi * freq * phase) / 44100);
 			phase++;
 			Samples.at(i) = ret;
 		}
@@ -66,5 +74,5 @@ public:
 	}
 private:
 	std::vector<double>Samples;
-	int BufferSize;
+	int BufferSize, samplerate;
 };
