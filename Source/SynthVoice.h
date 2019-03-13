@@ -16,6 +16,7 @@ public:
 	Voice(MidiKeyboardState & state, int Voices): m_KeyState(state), m_Voicenum(Voices)
 	{
 
+		m_Synth.addSound(new SynthSound());
 	}
 	~Voice() {}
 private:
@@ -26,6 +27,11 @@ private:
 };
 
 
-class SynthSound : public SynthesiserSound {
+struct SynthSound : public SynthesiserSound
+{
+	SynthSound() {}
+	bool appliesToNote(int) override { return true; }
+	bool appliesToChannel(int) override { return true; }
+
 
 };
