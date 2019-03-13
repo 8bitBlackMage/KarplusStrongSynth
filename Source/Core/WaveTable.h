@@ -9,7 +9,9 @@
 */
 
 #pragma once
+#include "JuceHeader.h"
 #include <vector>
+
 class wavetable
 {
 public:
@@ -40,7 +42,29 @@ public:
 			Samples.push_back(Buffer->at(i));
 		}
 	}
+	void fillBlockWnoise()
+	//fills entire block with white noise
+	{
+		for (int i = 0; i < BufferSize; i++)
+		{
+			Random rand(Time::currentTimeMillis());
+			double ret = rand.nextDouble();
+			Samples.at(i) = ret;
+		}
+	}
+	void fillBlockSine(int freq)
+	{
+		float phase;
+		double ret;
+		for (int i = 0; i < BufferSize; i++) 
+		{
+			ret = sin((juce::MathConstants<float>::twoPi * freq) + phase);
+			phase++;
+			Samples.at(i) = ret;
+		}
+
+	}
 private:
 	std::vector<double>Samples;
-
+	int BufferSize;
 };
