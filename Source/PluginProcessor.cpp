@@ -152,10 +152,11 @@ void KarplusStrongAuproAudioProcessor::processBlock (AudioBuffer<float>& buffer,
 		if (fire < 50 * 44.1) {
 			out = noise::MakeWNoise();
 		}
-		out += Delay.getDelay(50*44.1);
+		
 
 		filtered += Filter.process_samples(out);
 		Delay.writeDelay( filtered * 0.99);
+		out += Delay.getDelay(5 * 44.1);
 		left[i] = out;
 		right[i] = out;
 		

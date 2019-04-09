@@ -10,6 +10,7 @@
 
 #pragma once
 #include "JuceHeader.h"
+
 #include "Core/DelayUnit.h"
 #include "Core/Filter.h"
 #include "Core/Phasor.h"
@@ -75,6 +76,7 @@ private:
 	LowPass Filter;
 	Phasor Cycle;
 	DelayUnit Buffer;
+	
 
 };
 class SynthAudioSource : public AudioSource
