@@ -44,25 +44,19 @@ public:
     ///Returns a delayed signal/value at a given Sample Time. No interpolation is used
     float getDelay(float delayTime)
     {
-       double remainder, prevIndex, nextIndex;
-       
-        remainder = modf((m_writePos - delayTime), &prevIndex);
-        nextIndex = prevIndex + 1;
-        
-        while (prevIndex > m_maxDelay) prevIndex -= m_maxDelay;
-        while (prevIndex < 0) prevIndex += m_maxDelay;
-        
-        while (nextIndex > m_maxDelay) nextIndex -= m_maxDelay;
-        while (nextIndex < 0) nextIndex += m_maxDelay;
-        
-        float previous = m_buffer.at((int)prevIndex);
-        float next = m_buffer.at((int)nextIndex);
-        
-        
-        return((float)previous*(1-remainder)+next*remainder);
-		
-        
-        
+		float prevIndex = std::floor(m_writePos - delayTime);
+		float nextIndex = std::ceil (m_writePos - delayTime);
+		float remainder = delayTime - prevIndex;
+
+		while (prevIndex >= m_maxDelay) prevIndex -= m_maxDelay;
+		while (prevIndex < 0) prevIndex += m_maxDelay;
+		while (nextIndex >= m_maxDelay) nextIndex -= m_maxDelay;
+		while (nextIndex < 0) nextIndex += m_maxDelay;
+
+		float v1 = m_buffer[prevIndex];
+		float v2 = m_buffer[nextIndex];
+
+		return (1-remainder)*v1 + remainder*v2;
         
     }
     

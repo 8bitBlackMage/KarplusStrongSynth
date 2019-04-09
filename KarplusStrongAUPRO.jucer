@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="ERhKBK" name="KarplusStrongAUPRO" projectType="audioplug"
-              jucerVersion="5.3.2" pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn"
+              jucerVersion="5.4.3" pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn"
               pluginManufacturer="8BitPanda" companyName="8bitPanda">
   <MAINGROUP id="FPeTCg" name="KarplusStrongAUPRO">
     <GROUP id="{F8566B0F-273A-2870-C9EF-65EC1C4B5694}" name="Core">

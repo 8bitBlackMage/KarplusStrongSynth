@@ -14,7 +14,7 @@
 #include "Core/DelayUnit.h"
 #include "Core/Filter.h"
 #include "Core/Phasor.h"
-#include "Core/WaveTable.h"
+#include "Core/NoiseGenerator.h"
 struct SynthSound : public SynthesiserSound
 {
 	SynthSound() {}
@@ -25,9 +25,9 @@ struct SynthSound : public SynthesiserSound
 };
 class Voice: public SynthesiserVoice {
 public:
-	Voice():NoiseSource(10,44100),Filter(500,1,44100,1),Buffer(550)
+	Voice():Filter(500,1,44100,1),Buffer(550)
 	{
-		NoiseSource.fillBlockWnoise();
+		
 
 	}
 	~Voice() {}
@@ -43,12 +43,13 @@ public:
 
 		auto CyclesPerSecond = MidiMessage::getMidiNoteInHertz(midiNoteNumber);
 		auto CyclesPerSample = CyclesPerSecond / getSampleRate();
-
-
+		Envelope.noteOn();	
+		noiseburst = true;
 	}
 
 	void stopNote(float /*velocity*/, bool allowTailOff) override {
-
+		Envelope.noteOff();
+		noiseburst = false;
 	}
 
 	void pitchWheelMoved(int) override {
@@ -62,22 +63,39 @@ public:
 
 	void renderNextBlock(AudioSampleBuffer& outputBuffer, int startsample, int numsamples)override
 	{
-		//for (int i = 0; i < 5; i++)
-		//	Buffer.writeDelay[i];
+		float filtered, out;
+		int fire;
+		float * left = outputBuffer.getWritePointer(0);
+		float * right = outputBuffer.getWritePointer(1);
+		for (int i = 0; i < outputBuffer.getNumSamples(); i++)
+		{
 
-		//for (int i = 0; i < numsamples; i++) {
-		//	Filter.process_samples(Buffer.getDelay(i));
+			if (noiseburst == true && fire < 54 * 44.1) {
+				out = noise::MakeWNoise();
+			}
 
-		//}
+
+			filtered += Filter.process_samples(out);
+			Buffer.writeDelay(out * 0.97);
+			out = Buffer.getDelay(200);
+			left[i] = out;
+			right[i] = out;
+
+
+			fire++;
+
+		}
+		Envelope.applyEnvelopeToBuffer(outputBuffer, startsample, numsamples);
+;
 	}
+	
 
 private:
-	wavetable NoiseSource;
 	LowPass Filter;
 	Phasor Cycle;
 	DelayUnit Buffer;
-	
-
+	ADSR Envelope;
+	bool noiseburst;
 };
 class SynthAudioSource : public AudioSource
 {
@@ -106,6 +124,10 @@ public:
 
 
 	}
+
+	void releaseResources() override {}
+
+	
 private:
 	MidiKeyboardState& m_Keystate;
 	Synthesiser m_Synth;
