@@ -47,8 +47,10 @@ private:
 	double yi1 = 0;
 	double yi2 = 0;
 protected:
-	std::array<double, 3> a;
-	std::array<double, 3> b;
+	//std::array<double, 3> a;
+	double a[3];
+	double b[3];
+	//std::array<double, 3> b;
 	double alpha = 0;
 	double omega = 0;
 };

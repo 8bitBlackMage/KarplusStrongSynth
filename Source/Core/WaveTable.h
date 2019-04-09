@@ -11,11 +11,11 @@
 #pragma once
 #include "JuceHeader.h"
 #include <vector>
-
+#include <cmath>
 class wavetable
 {
 public:
-	wavetable(int Size, int SampleRate) 
+	wavetable(int Size, int SampleRate):BufferSize(Size), samplerate(SampleRate)
 	{
 		for (int i = 0; i < Size; i++)
 		{
@@ -66,13 +66,29 @@ public:
 		double ret;
 		for (int i = 0; i < BufferSize; i++) 
 		{
-			ret = sin((juce::MathConstants<float>::twoPi * freq * phase) / 44100);
+			ret = sin((juce::MathConstants<float>::twoPi * freq * phase) / samplerate);
 			phase++;
 			Samples.at(i) = ret;
 		}
 
 	}
-private:
+	void fillBlockSaw()
+	{ 
+		float phase;
+		for (int i = 0; i < BufferSize; i++)
+		{
+			double ret = fmodf(phase, 1) * 2 - 1;
+			Samples.at(i) = ret;
+			phase += 1.f / BufferSize;
+		}
+	}
+	void fillBlockAudio(std::string file) {
+		AudioFormatManager formatManager;
+		formatManager.registerBasicFormats();
+
+		AudioFormat  *format;
+	}
+	private:
 	std::vector<double>Samples;
 	int BufferSize, samplerate;
 };

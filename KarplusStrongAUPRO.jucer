@@ -7,6 +7,9 @@
     <GROUP id="{F8566B0F-273A-2870-C9EF-65EC1C4B5694}" name="Core">
       <FILE id="CYE8tD" name="DelayUnit.h" compile="0" resource="0" file="Source/Core/DelayUnit.h"/>
       <FILE id="DoZFIm" name="Filter.h" compile="0" resource="0" file="Source/Core/Filter.h"/>
+      <FILE id="Ww5jbR" name="NoiseGenerator.h" compile="0" resource="0"
+            file="Source/Core/NoiseGenerator.h"/>
+      <FILE id="fW0Uex" name="Phasor.h" compile="0" resource="0" file="Source/Core/Phasor.h"/>
       <FILE id="tH6eK1" name="WaveTable.h" compile="0" resource="0" file="Source/Core/WaveTable.h"/>
     </GROUP>
     <GROUP id="{63BA03A2-D9D0-BBF2-5B94-2BDD9575CBF7}" name="Effects">

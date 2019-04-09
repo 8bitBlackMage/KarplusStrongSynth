@@ -21,9 +21,10 @@ KarplusStrongAuproAudioProcessor::KarplusStrongAuproAudioProcessor()
                       #endif
                        .withOutput ("Output", AudioChannelSet::stereo(), true)
                      #endif
-                       )
+                       ), testTable(10000,44100), Filter(5000, 2, 44100,4), Delay(441000)
 #endif
 {
+	testTable.fillBlockSaw();
 }
 
 KarplusStrongAuproAudioProcessor::~KarplusStrongAuproAudioProcessor()
@@ -143,13 +144,26 @@ void KarplusStrongAuproAudioProcessor::processBlock (AudioBuffer<float>& buffer,
     // this code if your algorithm always overwrites all the output channels.
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
+	float* left = buffer.getWritePointer(0);
+	float* right = buffer.getWritePointer(1);
+	for (int i = 0; i < buffer.getNumSamples(); i++)
+	{
 
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
+		if (fire < 50 * 44.1) {
+			out = noise::MakeWNoise();
+		}
+		out += Delay.getDelay(50*44.1);
+
+		filtered += Filter.process_samples(out);
+		Delay.writeDelay( filtered * 0.99);
+		left[i] = out;
+		right[i] = out;
+		
+		Delay.tick();
+		fire++;
+		
+	}
+
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
         auto* channelData = buffer.getWritePointer (channel);

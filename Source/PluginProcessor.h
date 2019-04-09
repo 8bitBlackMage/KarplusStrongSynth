@@ -11,7 +11,11 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
-
+#include "Core/WaveTable.h"
+#include "Core/Phasor.h"
+#include "Core/Filter.h"
+#include "Core/NoiseGenerator.h"
+#include "Core/DelayUnit.h"
 //==============================================================================
 /**
 */
@@ -57,5 +61,12 @@ public:
 
 private:
     //==============================================================================
+	wavetable testTable;
+	LowPass Filter;
+	Phasor TestPhase;
+	DelayUnit Delay;
+	int fire = 0;
+	float filtered = 0;
+	float out = 0;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KarplusStrongAuproAudioProcessor)
 };

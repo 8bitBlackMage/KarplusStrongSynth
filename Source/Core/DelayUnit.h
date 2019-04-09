@@ -44,14 +44,6 @@ public:
     ///Returns a delayed signal/value at a given Sample Time. No interpolation is used
     float getDelay(float delayTime)
     {
- //             int readPos = m_writePos - delayTime;
-//        
- //       while (readPos > m_maxDelay) readPos -= m_maxDelay;
- //       while (readPos < 0) readPos += m_maxDelay;
-        
-//        return m_buffer.at(readPos);
-        
-        
        double remainder, prevIndex, nextIndex;
        
         remainder = modf((m_writePos - delayTime), &prevIndex);
