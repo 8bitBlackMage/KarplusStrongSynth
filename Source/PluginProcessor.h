@@ -18,6 +18,7 @@
 class KarplusStrongAuproAudioProcessor  : public AudioProcessor
 {
 public:
+	MidiKeyboardState keyboardState;
     //==============================================================================
     KarplusStrongAuproAudioProcessor();
     ~KarplusStrongAuproAudioProcessor();
@@ -58,7 +59,7 @@ public:
 private:
     //==============================================================================
 	SynthAudioSource m_Synth;
-	MidiKeyboardState keyboardState;
-
+	
+	
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KarplusStrongAuproAudioProcessor)
 };

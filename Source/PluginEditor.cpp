@@ -13,11 +13,12 @@
 
 //==============================================================================
 KarplusStrongAuproAudioProcessorEditor::KarplusStrongAuproAudioProcessorEditor (KarplusStrongAuproAudioProcessor& p)
-    : AudioProcessorEditor (&p), processor (p)
+    : AudioProcessorEditor (&p), processor (p),keyboardComponent(processor.keyboardState, MidiKeyboardComponent::horizontalKeyboard)
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
     setSize (400, 300);
+	addAndMakeVisible(keyboardComponent);
 }
 
 KarplusStrongAuproAudioProcessorEditor::~KarplusStrongAuproAudioProcessorEditor()
@@ -33,6 +34,7 @@ void KarplusStrongAuproAudioProcessorEditor::paint (Graphics& g)
     g.setColour (Colours::white);
     g.setFont (15.0f);
     g.drawFittedText ("Hello World!", getLocalBounds(), Justification::centred, 1);
+	keyboardComponent.setBounds(0, 100, 400, 100);
 }
 
 void KarplusStrongAuproAudioProcessorEditor::resized()

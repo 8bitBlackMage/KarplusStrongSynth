@@ -21,7 +21,7 @@ KarplusStrongAuproAudioProcessor::KarplusStrongAuproAudioProcessor()
                       #endif
                        .withOutput ("Output", AudioChannelSet::stereo(), true)
                      #endif
-                       ), m_Synth(keyboardState)
+                       ), m_Synth(keyboardState,48000)
 #endif
 {
 
@@ -99,6 +99,7 @@ void KarplusStrongAuproAudioProcessor::prepareToPlay (double sampleRate, int sam
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
 	m_Synth.prepareToPlay(samplesPerBlock, sampleRate);
+
 }
 
 void KarplusStrongAuproAudioProcessor::releaseResources()
@@ -146,9 +147,12 @@ void KarplusStrongAuproAudioProcessor::processBlock(AudioBuffer<float>& buffer, 
 	// this code if your algorithm always overwrites all the output channels.
 	for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
 		buffer.clear(i, 0, buffer.getNumSamples());
+		
 	AudioSourceChannelInfo bufferwrapper(&buffer, 0, buffer.getNumSamples());
-	
-		m_Synth.getNextAudioBlock(bufferwrapper);
+	keyboardState.processNextMidiBuffer(midiMessages, bufferwrapper.startSample, bufferwrapper.numSamples, true);
+	m_Synth.addMidi(midiMessages);
+	m_Synth.getNextAudioBlock(bufferwrapper);
+
 
 }
 

@@ -25,9 +25,14 @@ struct SynthSound : public SynthesiserSound
 };
 class Voice: public SynthesiserVoice {
 public:
-	Voice():Filter(500,1,44100,1),Buffer(550)
+	Voice(int sampleRate = 44100):Filter(10000,1,sampleRate,1),Buffer(sampleRate*5)
 	{
-		
+		ADSR::Parameters peram;
+		peram.attack = 0;
+		peram.decay = 50;
+		peram.sustain = 10;
+		peram.release = 5;
+		Envelope.setParameters(peram);
 
 	}
 	~Voice() {}
@@ -50,6 +55,7 @@ public:
 	void stopNote(float /*velocity*/, bool allowTailOff) override {
 		Envelope.noteOff();
 		noiseburst = false;
+		//fire = 0;
 	}
 
 	void pitchWheelMoved(int) override {
@@ -64,20 +70,19 @@ public:
 	void renderNextBlock(AudioSampleBuffer& outputBuffer, int startsample, int numsamples)override
 	{
 		float filtered, out;
-		int fire;
 		float * left = outputBuffer.getWritePointer(0);
 		float * right = outputBuffer.getWritePointer(1);
 		for (int i = 0; i < outputBuffer.getNumSamples(); i++)
 		{
 
-			if (noiseburst == true && fire < 54 * 44.1) {
+			if (noiseburst == true && fire < 50 * 44.1) {
 				out = noise::MakeWNoise();
 			}
 
-
+			out = Buffer.getDelay(200);
 			filtered += Filter.process_samples(out);
 			Buffer.writeDelay(out * 0.97);
-			out = Buffer.getDelay(200);
+			
 			left[i] = out;
 			right[i] = out;
 
@@ -96,13 +101,15 @@ private:
 	DelayUnit Buffer;
 	ADSR Envelope;
 	bool noiseburst;
+	int fire;
+
 };
 class SynthAudioSource : public AudioSource
 {
 public:
-	SynthAudioSource(MidiKeyboardState& keystate): m_Keystate(keystate) {
+	SynthAudioSource(MidiKeyboardState& keystate, int sampleRate): m_Keystate(keystate) {
 		for (int i = 0; i < 4; i++) {
-			m_Synth.addVoice(new Voice());
+			m_Synth.addVoice(new Voice(sampleRate));
 
 
 			m_Synth.addSound(new SynthSound()); 
@@ -112,24 +119,35 @@ public:
 
 	void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override {
 		m_Synth.setCurrentPlaybackSampleRate(sampleRate);
+		midiCollector.reset(sampleRate);
+	}
+	void addMidi(MidiBuffer & buffer) {
+		incomingMidi = buffer;
 	}
 	void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill) override {
 		bufferToFill.clearActiveBufferRegion();
 
-		MidiBuffer incomingMidi;
-
+		
+		//midiCollector.removeNextBlockOfMessages(incomingMidi, bufferToFill.numSamples);
+		
 		m_Keystate.processNextMidiBuffer(incomingMidi, bufferToFill.startSample, bufferToFill.numSamples, true);
 
 		m_Synth.renderNextBlock(*bufferToFill.buffer, incomingMidi, bufferToFill.startSample, bufferToFill.numSamples);
 
 
 	}
-
+	//void 
 	void releaseResources() override {}
 
+	MidiMessageCollector* getMidiCollector()
+	{
+		return &midiCollector;
+	}
 	
 private:
+	MidiBuffer incomingMidi;
 	MidiKeyboardState& m_Keystate;
+	MidiMessageCollector midiCollector;
 	Synthesiser m_Synth;
 };
 
