@@ -25,7 +25,7 @@ struct SynthSound : public SynthesiserSound
 };
 class Voice: public SynthesiserVoice {
 public:
-	Voice(int sampleRate = 44100):Filter(10000,1,sampleRate,1),Buffer(sampleRate*5)
+	Voice(int sampleRate = 48000):Filter(10000,1,sampleRate,1),Buffer(sampleRate*5)
 	{
 		ADSR::Parameters peram;
 		peram.attack = 0;
@@ -40,7 +40,7 @@ public:
 
 	bool canPlaySound(SynthesiserSound* sound) override
 	{
-		return dynamic_cast<SynthesiserSound*> (sound) != nullptr;
+		return dynamic_cast<SynthSound*> (sound) != nullptr;
 	}
 
 	void startNote(int midiNoteNumber, float velocity,
@@ -55,7 +55,7 @@ public:
 	void stopNote(float /*velocity*/, bool allowTailOff) override {
 		Envelope.noteOff();
 		noiseburst = false;
-		//fire = 0;
+		fire = 0;
 	}
 
 	void pitchWheelMoved(int) override {
@@ -66,31 +66,32 @@ public:
 	{
 
 	}
-
 	void renderNextBlock(AudioSampleBuffer& outputBuffer, int startsample, int numsamples)override
 	{
-		float filtered, out;
+		if (!Envelope.isActive()) return;
+		
 		float * left = outputBuffer.getWritePointer(0);
 		float * right = outputBuffer.getWritePointer(1);
 		for (int i = 0; i < outputBuffer.getNumSamples(); i++)
 		{
+			float out{ 0 };
+			if (noiseburst && (fire < (50 * 44.1))) {
 
-			if (noiseburst == true && fire < 50 * 44.1) {
 				out = noise::MakeWNoise();
 			}
 
-			out = Buffer.getDelay(200);
-			filtered += Filter.process_samples(out);
+			out += Buffer.getDelay(200);
+			out = Filter.process_samples(out);
 			Buffer.writeDelay(out * 0.97);
-			
-			left[i] = out;
-			right[i] = out;
-
+			float env = Envelope.getNextSample();
+			left[i] += out * env;
+			right[i] += out * env;
+			if (!Envelope.isActive()) clearCurrentNote();
 
 			fire++;
 
 		}
-		Envelope.applyEnvelopeToBuffer(outputBuffer, startsample, numsamples);
+		//Envelope.applyEnvelopeToBuffer(outputBuffer, startsample, numsamples);
 ;
 	}
 	
@@ -108,13 +109,12 @@ class SynthAudioSource : public AudioSource
 {
 public:
 	SynthAudioSource(MidiKeyboardState& keystate, int sampleRate): m_Keystate(keystate) {
-		for (int i = 0; i < 4; i++) {
-			m_Synth.addVoice(new Voice(sampleRate));
+		for (int i = 0; i < 4; i++) 
+			m_Synth.addVoice(new Voice(m_Synth.getSampleRate()));
 
 
-			m_Synth.addSound(new SynthSound()); 
-			
-		}
+			m_Synth.addSound(new SynthSound());
+
 	}
 
 	void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override {
@@ -130,7 +130,7 @@ public:
 		
 		//midiCollector.removeNextBlockOfMessages(incomingMidi, bufferToFill.numSamples);
 		
-		m_Keystate.processNextMidiBuffer(incomingMidi, bufferToFill.startSample, bufferToFill.numSamples, true);
+		//m_Keystate.processNextMidiBuffer(incomingMidi, bufferToFill.startSample, bufferToFill.numSamples, true);
 
 		m_Synth.renderNextBlock(*bufferToFill.buffer, incomingMidi, bufferToFill.startSample, bufferToFill.numSamples);
 

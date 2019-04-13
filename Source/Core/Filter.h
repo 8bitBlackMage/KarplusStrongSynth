@@ -18,11 +18,16 @@ class Biquad //public Filter
 //thanks Dom
 {
 public:
-	Biquad(float cutoff = 20000, float res = 10, float samplerate = 44100, float dbgain = 1.0)
+	Biquad(float cutoff = 20000, float res = 10, float samplerate = 44100, float dbgain = 1.0):M_Cutoff(cutoff),M_Res(res), M_samplerate(samplerate),M_DBGain(dbgain)
 	{
-		Calculate_intermediates(cutoff, res, samplerate, dbgain);
-	}
+		Calculate_intermediates(cutoff, res, M_samplerate, dbgain);
 
+	}
+	void resetsamplerate(int samplerate)
+	{
+		M_samplerate = samplerate;
+		Calculate_intermediates(M_Cutoff, M_Res, M_samplerate, M_DBGain);
+	}
 	float process_samples(float sample) {
 		float processed = ((b[0] * sample) + (b[1] * xi1) + (b[2] * xi2) - (a[1] * yi1) - (a[2] * yi2)) * a[0];
 		xi2 = xi1;
@@ -35,7 +40,10 @@ public:
 
 private:
 	float A;
-
+	int M_samplerate;
+	int M_Cutoff;
+	int M_Res;
+	int M_DBGain;
 	void Calculate_intermediates(float Cutoff, float Res, float SampleRate, float DbGain)
 	{
 		A = pow(10, DbGain / 20);
