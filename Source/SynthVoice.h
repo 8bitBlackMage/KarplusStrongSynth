@@ -95,7 +95,9 @@ public:
 ;
 	}
 	
-
+	void setCurrentPlaybackSampleRate(double samplerate) override {
+		Filter.resetsamplerate((int)samplerate);
+	}
 private:
 	LowPass Filter;
 	Phasor Cycle;
@@ -110,7 +112,7 @@ class SynthAudioSource : public AudioSource
 public:
 	SynthAudioSource(MidiKeyboardState& keystate, int sampleRate): m_Keystate(keystate) {
 		for (int i = 0; i < 4; i++) 
-			m_Synth.addVoice(new Voice(m_Synth.getSampleRate()));
+			m_Synth.addVoice(new Voice(44100));
 
 
 			m_Synth.addSound(new SynthSound());
@@ -118,6 +120,10 @@ public:
 	}
 
 	void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override {
+		for (int i = 0; i < m_Synth.getNumVoices(); i++)
+		{
+			m_Synth.getVoice(i)->setCurrentPlaybackSampleRate(sampleRate);
+		}
 		m_Synth.setCurrentPlaybackSampleRate(sampleRate);
 		midiCollector.reset(sampleRate);
 	}
