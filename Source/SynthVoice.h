@@ -25,13 +25,13 @@ struct SynthSound : public SynthesiserSound
 };
 class Voice: public SynthesiserVoice {
 public:
-	Voice(int sampleRate = 44100):Filter(10000,1,sampleRate,1),Buffer(sampleRate*5)
+	Voice(int sampleRate = 44100 ):Filter(10000,1,sampleRate,1),Buffer(sampleRate*5)
 	{
 		ADSR::Parameters peram;
-		peram.attack = 0;
-		peram.decay = 50;
-		peram.sustain = 10;
-		peram.release = 5;
+		peram.attack = 5;
+		peram.decay = 3;
+		peram.sustain = 3;
+		peram.release = 2;
 		Envelope.setParameters(peram);
 
 	}
@@ -40,7 +40,7 @@ public:
 
 	bool canPlaySound(SynthesiserSound* sound) override
 	{
-		return dynamic_cast<SynthesiserSound*> (sound) != nullptr;
+		return dynamic_cast<SynthSound*> (sound) != nullptr;
 	}
 
 	void startNote(int midiNoteNumber, float velocity,
@@ -50,12 +50,18 @@ public:
 		auto CyclesPerSample = CyclesPerSecond / getSampleRate();
 		Envelope.noteOn();	
 		noiseburst = true;
+		
 	}
-
-	void stopNote(float /*velocity*/, bool allowTailOff) override {
-		Envelope.noteOff();
+	
+	void stopNote(float /*velocity*/, bool allowTailOff = true) override {
+		if (allowTailOff)
+		{
+			if (tailOff < 0.005)
+				tailOff = 1.0;
+		}
+		
 		noiseburst = false;
-		//fire = 0;
+		tailOff -= 0.005;
 	}
 
 	void pitchWheelMoved(int) override {
@@ -72,28 +78,41 @@ public:
 		float filtered, out;
 		float * left = outputBuffer.getWritePointer(0);
 		float * right = outputBuffer.getWritePointer(1);
-		for (int i = 0; i < outputBuffer.getNumSamples(); i++)
-		{
+		
 
-			if (noiseburst == true && fire < 50 * 44.1) {
-				out = noise::MakeWNoise();
+			for (int i = 0; i < outputBuffer.getNumSamples(); i++)
+			{
+
+				if ((noiseburst) && (fire < (5000 * 44.1))) {
+				
+				out =  rand.nextFloat() * 0.25f - 0.125f;
+					//out = noise::MakeWNoise();
+					//Envelope.noteOff();
+					
+				}
+				else {
+				out = Buffer.getDelay(500);
+				filtered = Filter.process_samples(out);
+				Buffer.writeDelay(filtered * 0.97);
+				}
+				left[i] += out;
+				right[i] += out;
+
+				if (!Envelope.isActive())
+					clearCurrentNote();
+
+				fire++;
+				tailOff *= 0.99;
+
+				if (tailOff < 0.05) {
+					Envelope.noteOff();
+					clearCurrentNote();
+				}
 			}
-
-			out = Buffer.getDelay(200);
-			filtered += Filter.process_samples(out);
-			Buffer.writeDelay(out * 0.97);
+			Envelope.applyEnvelopeToBuffer(outputBuffer, startsample, numsamples);
 			
-			left[i] = out;
-			right[i] = out;
 
-
-			fire++;
-
-		}
-		Envelope.applyEnvelopeToBuffer(outputBuffer, startsample, numsamples);
-;
 	}
-	
 
 private:
 	LowPass Filter;
@@ -101,8 +120,10 @@ private:
 	DelayUnit Buffer;
 	ADSR Envelope;
 	bool noiseburst;
-	int fire;
-
+	int fire = 0;
+	int offcount;
+	float tailOff = 1.0;
+	Random rand;
 };
 class SynthAudioSource : public AudioSource
 {
@@ -130,7 +151,7 @@ public:
 		
 		//midiCollector.removeNextBlockOfMessages(incomingMidi, bufferToFill.numSamples);
 		
-		m_Keystate.processNextMidiBuffer(incomingMidi, bufferToFill.startSample, bufferToFill.numSamples, true);
+		//m_Keystate.processNextMidiBuffer(incomingMidi, bufferToFill.startSample, bufferToFill.numSamples, true);
 
 		m_Synth.renderNextBlock(*bufferToFill.buffer, incomingMidi, bufferToFill.startSample, bufferToFill.numSamples);
 
