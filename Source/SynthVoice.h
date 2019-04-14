@@ -25,12 +25,12 @@ struct SynthSound : public SynthesiserSound
 };
 class Voice: public SynthesiserVoice {
 public:
-	Voice(int sampleRate = 48000):Filter(10000,1,sampleRate,1),Buffer(sampleRate*5)
+	Voice(int sampleRate = 48000):Filter(10000,(1/sqrt(2)),sampleRate,1),Buffer(sampleRate*50)
 	{
 		ADSR::Parameters peram;
 		peram.attack = 0;
-		peram.decay = 50;
-		peram.sustain = 10;
+		peram.decay = 5;
+		peram.sustain = 50;
 		peram.release = 5;
 		Envelope.setParameters(peram);
 
@@ -48,6 +48,8 @@ public:
 
 		auto CyclesPerSecond = MidiMessage::getMidiNoteInHertz(midiNoteNumber);
 		auto CyclesPerSample = CyclesPerSecond / getSampleRate();
+		tapTime = (1/CyclesPerSecond) * getSampleRate();
+		DBG(tapTime);
 		Envelope.noteOn();	
 		noiseburst = true;
 	}
@@ -56,6 +58,7 @@ public:
 		Envelope.noteOff();
 		noiseburst = false;
 		fire = 0;
+		
 	}
 
 	void pitchWheelMoved(int) override {
@@ -75,19 +78,21 @@ public:
 		for (int i = 0; i < outputBuffer.getNumSamples(); i++)
 		{
 			float out{ 0 };
-			if (noiseburst && (fire < (50 * 44.1))) {
+			if (noiseburst && (fire < (500))) {
 
 				out = noise::MakeWNoise();
 			}
 
-			out += Buffer.getDelay(200);
+			out += Buffer.getDelay(round(tapTime));
 			out = Filter.process_samples(out);
 			Buffer.writeDelay(out * 0.97);
 			float env = Envelope.getNextSample();
 			left[i] += out * env;
 			right[i] += out * env;
-			if (!Envelope.isActive()) clearCurrentNote();
-
+			if (!Envelope.isActive()) {
+				clearCurrentNote();
+				tapTime = 0;
+			}
 			fire++;
 
 		}
@@ -105,6 +110,7 @@ private:
 	ADSR Envelope;
 	bool noiseburst;
 	int fire;
+	float tapTime = 0;
 
 };
 class SynthAudioSource : public AudioSource
