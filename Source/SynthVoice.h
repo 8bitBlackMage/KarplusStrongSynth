@@ -71,7 +71,7 @@ public:
 	}
 	void renderNextBlock(AudioSampleBuffer& outputBuffer, int startsample, int numsamples)override
 	{
-		if (!Envelope.isActive()) return;
+	//	if (!Envelope.isActive()) return;
 		
 		float * left = outputBuffer.getWritePointer(0);
 		float * right = outputBuffer.getWritePointer(1);
@@ -135,6 +135,9 @@ public:
 	}
 	void addMidi(MidiBuffer & buffer) {
 		incomingMidi = buffer;
+	}
+	void updateVoicePeramiters() {
+
 	}
 	void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill) override {
 		bufferToFill.clearActiveBufferRegion();

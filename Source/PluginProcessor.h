@@ -59,7 +59,11 @@ public:
 private:
     //==============================================================================
 	SynthAudioSource m_Synth;
-	
-	
+	float volume = 0.9;
+	float attack;
+	float decay;
+	float sustain;
+	float release;
+	float tone; 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KarplusStrongAuproAudioProcessor)
 };

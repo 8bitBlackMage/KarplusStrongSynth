@@ -146,8 +146,7 @@ void KarplusStrongAuproAudioProcessor::processBlock(AudioBuffer<float>& buffer, 
 	// when they first compile a plugin, but obviously you don't need to keep
 	// this code if your algorithm always overwrites all the output channels.
 	for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
-		buffer.clear(i, 0, buffer.getNumSamples());
-		
+		buffer.clear(i, 0, buffer.getNumSamples());	
 	AudioSourceChannelInfo bufferwrapper(&buffer, 0, buffer.getNumSamples());
 	keyboardState.processNextMidiBuffer(midiMessages, bufferwrapper.startSample, bufferwrapper.numSamples, true);
 	m_Synth.addMidi(midiMessages);
