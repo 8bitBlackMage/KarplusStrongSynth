@@ -28,10 +28,10 @@ public:
 	Voice(int sampleRate = 48000):Filter(10000,(1/sqrt(2)),sampleRate,1),Buffer(sampleRate*50)
 	{
 		ADSR::Parameters peram;
-		peram.attack = 0;
-		peram.decay = 5;
-		peram.sustain = 50;
-		peram.release = 5;
+		peram.attack = 0.01;
+		peram.decay = 0.01;
+		peram.sustain = 0.7;
+		peram.release = 0.8;
 		Envelope.setParameters(peram);
 
 	}
@@ -52,12 +52,13 @@ public:
 		DBG(tapTime);
 		Envelope.noteOn();	
 		noiseburst = true;
+		fire = 0;
 	}
 
 	void stopNote(float /*velocity*/, bool allowTailOff) override {
 		Envelope.noteOff();
 		noiseburst = false;
-		fire = 0;
+		
 		
 	}
 
@@ -78,14 +79,14 @@ public:
 		for (int i = 0; i < outputBuffer.getNumSamples(); i++)
 		{
 			float out{ 0 };
-			if (noiseburst && (fire < (500))) {
+			if (noiseburst && (fire < tapTime)) {
 
 				out = noise::MakeWNoise();
 			}
 
 			out += Buffer.getDelay(round(tapTime));
 			out = Filter.process_samples(out);
-			Buffer.writeDelay(out * 0.97);
+			Buffer.writeDelay(out);
 			float env = Envelope.getNextSample();
 			left[i] += out * env;
 			right[i] += out * env;
@@ -110,7 +111,7 @@ private:
 	ADSR Envelope;
 	bool noiseburst;
 	int fire;
-	float tapTime = 0;
+	int tapTime = 0;
 
 };
 class SynthAudioSource : public AudioSource

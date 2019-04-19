@@ -12,6 +12,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "SynthVoice.h"
+class Controller;
 //==============================================================================
 /**
 */
@@ -58,6 +59,7 @@ public:
 
 private:
     //==============================================================================
+	friend class Controller;
 	SynthAudioSource m_Synth;
 	float volume = 0.9;
 	float attack;

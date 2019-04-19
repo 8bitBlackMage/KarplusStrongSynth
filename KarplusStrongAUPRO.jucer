@@ -16,6 +16,8 @@
       <FILE id="y7ejtv" name="Overdrive.h" compile="0" resource="0" file="Source/Effects/Overdrive.h"/>
     </GROUP>
     <GROUP id="{CCAECAA1-0D50-69A2-DBC5-A6630DE564F0}" name="Source">
+      <FILE id="LLbHjw" name="Controller.cpp" compile="1" resource="0" file="Source/Controller.cpp"/>
+      <FILE id="l2GN1h" name="Controller.h" compile="0" resource="0" file="Source/Controller.h"/>
       <FILE id="UeiFnk" name="SynthVoice.cpp" compile="1" resource="0" file="Source/SynthVoice.cpp"/>
       <FILE id="MoWft8" name="SynthVoice.h" compile="0" resource="0" file="Source/SynthVoice.h"/>
       <FILE id="IdANsL" name="PluginProcessor.cpp" compile="1" resource="0"
