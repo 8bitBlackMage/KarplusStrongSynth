@@ -56,7 +56,7 @@ void KarplusStrongAuproAudioProcessorEditor::resized()
 	size2.removeFromTop(300);
 	size1.removeFromBottom(10);
     // This is generally where you'll want to lay out the positions of any
-    // subcomponents in your editor..
+    // subcomponents in your edsitor..
 	keyboardComponent.setBounds(size1.reduced(3));
 	attackS.setBounds(size2.removeFromLeft(100));
 	decayS.setBounds(size2.removeFromLeft(100));
@@ -72,6 +72,7 @@ void KarplusStrongAuproAudioProcessorEditor::SliderSetup(Slider * slider, int si
 	slider->setColour(0x1001311, Colour::fromRGB(153, 50, 204));
 	slider->setColour(0x1001312, Colour::fromRGB(42, 13, 81));
 	slider->setSize(size, size);
+	slider->setRange(10, 0.1);
 	slider->setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
 	addAndMakeVisible(slider);
 }

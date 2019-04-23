@@ -16,10 +16,61 @@ Controller::Controller(KarplusStrongAuproAudioProcessor* Processor, KarplusStron
 {
 	m_Editor->attackS.onValueChange = [this] 
 	{
-		DBG(String(m_Editor->attackS.getValue()));
+		m_Processor->attack = m_Editor->attackS.getValue();
+	};
+	m_Editor->decayS.onValueChange = [this]
+	{
+		m_Processor->decay = m_Editor->decayS.getValue();
+	};
+	m_Editor->sustainS.onValueChange = [this]
+	{
+		m_Processor->sustain = m_Editor->sustainS.getValue();
+	};
+	m_Editor->attackS.onDragStart = [this]
+	{
+		m_Editor->attackS.setTextBoxStyle(Slider::TextBoxAbove,true,60,40);
+		m_Editor->attackS.setSize(100, 160);
+	};
+	m_Editor->attackS.onDragEnd = [this]
+	{
+		m_Editor->attackS.setTextBoxStyle(Slider::NoTextBox,true,NULL,NULL);
+		m_Editor->attackS.setSize(100, 100);
+	};
+	m_Editor->decayS.onDragStart = [this]
+	{
+		m_Editor->decayS.setTextBoxStyle(Slider::TextBoxAbove, true, 60, 40);
+		m_Editor->decayS.setSize(100, 160);
+	};
+	m_Editor->decayS.onDragEnd = [this]
+	{
+		m_Editor->decayS.setTextBoxStyle(Slider::NoTextBox, true, NULL, NULL);
+		m_Editor->decayS.setSize(100, 100);
+	};
+	m_Editor->sustainS.onDragStart = [this]
+	{
+		m_Editor->sustainS.setTextBoxStyle(Slider::TextBoxAbove, true, 60, 40);
+		m_Editor->sustainS.setSize(100, 160);
+		
+	};
+	m_Editor->sustainS.onDragEnd = [this]
+	{
+		m_Editor->sustainS.setTextBoxStyle(Slider::NoTextBox, true, NULL, NULL);
+		m_Editor->sustainS.setSize(100, 100);
+	};
+	m_Editor->releaseS.onDragStart = [this]
+	{
+		m_Editor->releaseS.setTextBoxStyle(Slider::TextBoxAbove, true, 60, 40);
+		m_Editor->releaseS.setSize(100, 160);
+	};
+	m_Editor->releaseS.onDragEnd = [this]
+	{
+		m_Editor->releaseS.setTextBoxStyle(Slider::NoTextBox, true, NULL, NULL);
+		m_Editor->releaseS.setSize(100, 100);
 	};
 
+
 }
+
 
 
 Controller::~Controller()

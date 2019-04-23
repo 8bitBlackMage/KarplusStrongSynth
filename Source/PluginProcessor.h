@@ -62,6 +62,7 @@ private:
 	friend class Controller;
 	SynthAudioSource m_Synth;
 	float volume = 0.9;
+	ADSR::Parameters envelope;
 	float attack;
 	float decay;
 	float sustain;

@@ -27,6 +27,7 @@ class Voice: public SynthesiserVoice {
 public:
 	Voice(int sampleRate = 48000):Filter(10000,(1/sqrt(2)),sampleRate,1),Buffer(sampleRate*50)
 	{
+		
 		ADSR::Parameters peram;
 		peram.attack = 0.01;
 		peram.decay = 0.01;
@@ -38,7 +39,7 @@ public:
 	~Voice() {}
 
 
-	bool canPlaySound(SynthesiserSound* sound) override
+		bool canPlaySound(SynthesiserSound* sound) override
 	{
 		return dynamic_cast<SynthSound*> (sound) != nullptr;
 	}
@@ -72,7 +73,10 @@ public:
 	}
 	void renderNextBlock(AudioSampleBuffer& outputBuffer, int startsample, int numsamples)override
 	{
-	//	if (!Envelope.isActive()) return;
+		if (envelopeVAR.attack !=  Envelope.getParameters().attack || envelopeVAR.decay != Envelope.getParameters().decay || envelopeVAR.sustain != Envelope.getParameters().sustain || envelopeVAR.release != Envelope.getParameters().release)
+		{
+			Envelope.setParameters(envelopeVAR);
+		}
 		
 		float * left = outputBuffer.getWritePointer(0);
 		float * right = outputBuffer.getWritePointer(1);
@@ -104,6 +108,11 @@ public:
 	void setCurrentPlaybackSampleRate(double samplerate) override {
 		Filter.resetsamplerate((int)samplerate);
 	}
+	void setEnvelope(ADSR::Parameters var)
+	{
+
+	}
+	ADSR::Parameters envelopeVAR ;
 private:
 	LowPass Filter;
 	Phasor Cycle;
@@ -114,6 +123,23 @@ private:
 	int tapTime = 0;
 
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class SynthAudioSource : public AudioSource
 {
 public:
@@ -137,9 +163,7 @@ public:
 	void addMidi(MidiBuffer & buffer) {
 		incomingMidi = buffer;
 	}
-	void updateVoicePeramiters() {
 
-	}
 	void getNextAudioBlock(const AudioSourceChannelInfo& bufferToFill) override {
 		bufferToFill.clearActiveBufferRegion();
 
@@ -152,9 +176,15 @@ public:
 
 
 	}
-	//void 
 	void releaseResources() override {}
-
+	void getADSR(ADSR::Parameters envelope)
+	{
+	
+		for (int i = 0; i < 4; i++) {
+			if (Voice* myVoice = dynamic_cast<Voice*> (m_Synth.getVoice(i)))
+				myVoice->envelopeVAR = envelope;
+		}
+	}
 	MidiMessageCollector* getMidiCollector()
 	{
 		return &midiCollector;

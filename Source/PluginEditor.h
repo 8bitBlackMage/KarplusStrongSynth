@@ -28,12 +28,13 @@ public:
 
 private:
 	friend class Controller;
-	Controller m_controller;
+	
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it
-	void SliderSetup(Slider * slider, int size);
     KarplusStrongAuproAudioProcessor& processor;
+	void SliderSetup(Slider * slider, int size);
 	MidiKeyboardComponent keyboardComponent;
 	Slider attackS, decayS, sustainS, releaseS, volumeS;
+	Controller m_controller;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KarplusStrongAuproAudioProcessorEditor)
 };
