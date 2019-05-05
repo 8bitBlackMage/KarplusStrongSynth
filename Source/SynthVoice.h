@@ -77,7 +77,14 @@ public:
 		{
 			Envelope.setParameters(envelopeVAR);
 		}
-		
+		if (Cutoff != Filter.getCuttof()) {
+			Filter.ChangeFreq(Cutoff);
+			Filter.changeVal();
+		}
+		if (Res != Filter.getRes()) {
+			Filter.changeRes(Res);
+			Filter.changeVal();
+		}
 		float * left = outputBuffer.getWritePointer(0);
 		float * right = outputBuffer.getWritePointer(1);
 		for (int i = 0; i < outputBuffer.getNumSamples(); i++)
@@ -92,8 +99,8 @@ public:
 			out = Filter.process_samples(out);
 			Buffer.writeDelay(out);
 			float env = Envelope.getNextSample();
-			left[i] += out * env;
-			right[i] += out * env;
+			left[i] += (out * Volume) * env;
+			right[i] += (out* Volume )*env;
 			if (!Envelope.isActive()) {
 				clearCurrentNote();
 				tapTime = 0;
@@ -101,7 +108,7 @@ public:
 			fire++;
 
 		}
-		//Envelope.applyEnvelopeToBuffer(outputBuffer, startsample, numsamples);
+
 ;
 	}
 	
@@ -113,6 +120,9 @@ public:
 
 	}
 	ADSR::Parameters envelopeVAR ;
+	float Volume;
+	int Cutoff;
+	float Res;
 private:
 	LowPass Filter;
 	Phasor Cycle;
@@ -185,6 +195,27 @@ public:
 				myVoice->envelopeVAR = envelope;
 		}
 	}
+	void setFreq(int cuttoff)
+	{
+		for (int i = 0; i < 4; i++) {
+			if (Voice* myVoice = dynamic_cast<Voice*> (m_Synth.getVoice(i)))
+				myVoice->Cutoff = cuttoff;
+		}
+	}
+	void setRes(float res) {
+		for (int i = 0; i < 4; i++) {
+			if (Voice* myVoice = dynamic_cast<Voice*> (m_Synth.getVoice(i)))
+				myVoice->Res = res;
+		}
+	}
+	void setVolume(float Vol) {
+
+		for (int i = 0; i < 4; i++) {
+			if (Voice* myVoice = dynamic_cast<Voice*> (m_Synth.getVoice(i)))
+				myVoice->Volume = Vol;
+		}
+	}
+
 	MidiMessageCollector* getMidiCollector()
 	{
 		return &midiCollector;

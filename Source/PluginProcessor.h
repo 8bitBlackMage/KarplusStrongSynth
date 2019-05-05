@@ -57,16 +57,20 @@ public:
     void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+	AudioParameterFloat *attack;
+	AudioParameterFloat *decay;
+	AudioParameterFloat *sustain;
+	AudioParameterFloat *release;
+	AudioParameterFloat *tone;
+	AudioParameterFloat *Res;
+	AudioParameterFloat *volume;
 private:
     //==============================================================================
 	friend class Controller;
 	SynthAudioSource m_Synth;
-	float volume = 0.9;
+	//float volume = 0.9;
 	ADSR::Parameters envelope;
-	float attack;
-	float decay;
-	float sustain;
-	float release;
-	float tone; 
+	 
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KarplusStrongAuproAudioProcessor)
 };

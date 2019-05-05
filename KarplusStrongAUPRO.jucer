@@ -11,6 +11,7 @@
             file="Source/Core/NoiseGenerator.h"/>
       <FILE id="fW0Uex" name="Phasor.h" compile="0" resource="0" file="Source/Core/Phasor.h"/>
       <FILE id="tH6eK1" name="WaveTable.h" compile="0" resource="0" file="Source/Core/WaveTable.h"/>
+      <FILE id="HPMs0z" name="XML_handler.h" compile="0" resource="0" file="Source/Core/XML_handler.h"/>
     </GROUP>
     <GROUP id="{63BA03A2-D9D0-BBF2-5B94-2BDD9575CBF7}" name="Effects">
       <FILE id="y7ejtv" name="Overdrive.h" compile="0" resource="0" file="Source/Effects/Overdrive.h"/>

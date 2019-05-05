@@ -12,20 +12,31 @@
 #include "PluginEditor.h"
 
 //==============================================================================
-KarplusStrongAuproAudioProcessorEditor::KarplusStrongAuproAudioProcessorEditor (KarplusStrongAuproAudioProcessor& p)
-    : AudioProcessorEditor (&p), processor (p),keyboardComponent(processor.keyboardState, MidiKeyboardComponent::horizontalKeyboard), m_controller(&p,this)
+KarplusStrongAuproAudioProcessorEditor::KarplusStrongAuproAudioProcessorEditor(KarplusStrongAuproAudioProcessor& p)
+	: AudioProcessorEditor(&p), processor(p), keyboardComponent(processor.keyboardState, MidiKeyboardComponent::horizontalKeyboard), m_controller(&p, this)
 {
-    // Make sure that before the constructor has finished, you've set the
-    // editor's size to whatever you need it to be.
-    setSize (1024, 768);
+	// Make sure that before the constructor has finished, you've set the
+	// editor's size to whatever you need it to be.
+	setSize(1024, 768);
 	keyboardComponent.setKeyWidth(30);
 	SliderSetup(&attackS, 100);
 	SliderSetup(&decayS, 100);
 	SliderSetup(&sustainS, 100);
 	SliderSetup(&releaseS, 100);
 	SliderSetup(&volumeS, 250);
+	SliderSetup(&toneS, 250);
+	SliderSetup(&ResS, 125);
 	addAndMakeVisible(keyboardComponent);
+	attackS.setRange(0, 10, 0.1);
+	decayS.setRange(0, 10, 0.1);
+	sustainS.setRange(0, 1, 0.01);
+	releaseS.setRange(0, 10, 0.1);
+	volumeS.setRange(0, 1, 0.1);
+	toneS.setRange(100, 10000, 1);
+	ResS.setRange(0, 1, 0.1);
 
+
+	Storage.loadPreset(&p,"default");
 }
 
 KarplusStrongAuproAudioProcessorEditor::~KarplusStrongAuproAudioProcessorEditor()
@@ -39,6 +50,7 @@ void KarplusStrongAuproAudioProcessorEditor::paint (Graphics& g)
 	auto size1 = getLocalBounds();
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll (Colour::fromRGB(75, 0, 130));
+	g.drawText("tone", size1.removeFromLeft(250).removeFromTop(250), juce::Justification::centred, false);
 	g.drawText("volume", size1.removeFromRight(250).removeFromTop(250), juce::Justification::centred, false);
 	g.drawText("attack", getLocalBounds().removeFromTop(690).removeFromLeft(100), juce::Justification::centred, false);
 	g.drawText("decay", getLocalBounds().removeFromTop(690).removeFromLeft(300), juce::Justification::centred, true);
@@ -63,6 +75,8 @@ void KarplusStrongAuproAudioProcessorEditor::resized()
 	sustainS.setBounds(size2.removeFromLeft(100));
 	releaseS.setBounds(size2.removeFromLeft(100));
 	volumeS.setBounds(size3.removeFromRight(250));
+	toneS.setBounds(size3.removeFromLeft(250));
+	ResS.setBounds(size3.removeFromLeft(375));
 }
 
 void KarplusStrongAuproAudioProcessorEditor::SliderSetup(Slider * slider, int size)
@@ -72,7 +86,7 @@ void KarplusStrongAuproAudioProcessorEditor::SliderSetup(Slider * slider, int si
 	slider->setColour(0x1001311, Colour::fromRGB(153, 50, 204));
 	slider->setColour(0x1001312, Colour::fromRGB(42, 13, 81));
 	slider->setSize(size, size);
-	slider->setRange(10, 0.1);
+	
 	slider->setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
 	addAndMakeVisible(slider);
 }

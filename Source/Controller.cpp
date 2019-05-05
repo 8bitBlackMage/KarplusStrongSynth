@@ -16,15 +16,27 @@ Controller::Controller(KarplusStrongAuproAudioProcessor* Processor, KarplusStron
 {
 	m_Editor->attackS.onValueChange = [this] 
 	{
-		m_Processor->attack = m_Editor->attackS.getValue();
+		*m_Processor->attack = m_Editor->attackS.getValue();
 	};
 	m_Editor->decayS.onValueChange = [this]
 	{
-		m_Processor->decay = m_Editor->decayS.getValue();
+		*m_Processor->decay = m_Editor->decayS.getValue();
 	};
 	m_Editor->sustainS.onValueChange = [this]
 	{
-		m_Processor->sustain = m_Editor->sustainS.getValue();
+		*m_Processor->sustain = m_Editor->sustainS.getValue();
+	};
+	m_Editor->releaseS.onValueChange = [this] {
+		*m_Processor->release = m_Editor->releaseS.getValue();
+	};
+	m_Editor->volumeS.onValueChange = [this] {
+		*m_Processor->volume = m_Editor->volumeS.getValue();
+	};
+	m_Editor->toneS.onValueChange = [this] {
+		*m_Processor->tone = m_Editor->toneS.getValue();
+	};
+	m_Editor->ResS.onValueChange = [this] {
+		*m_Processor->Res = m_Editor->ResS.getValue();
 	};
 	m_Editor->attackS.onDragStart = [this]
 	{
@@ -67,7 +79,6 @@ Controller::Controller(KarplusStrongAuproAudioProcessor* Processor, KarplusStron
 		m_Editor->releaseS.setTextBoxStyle(Slider::NoTextBox, true, NULL, NULL);
 		m_Editor->releaseS.setSize(100, 100);
 	};
-
 
 }
 

@@ -14,17 +14,31 @@
 //==============================================================================
 KarplusStrongAuproAudioProcessor::KarplusStrongAuproAudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
-     : AudioProcessor (BusesProperties()
-                     #if ! JucePlugin_IsMidiEffect
-                      #if ! JucePlugin_IsSynth
-                       .withInput  ("Input",  AudioChannelSet::stereo(), true)
-                      #endif
-                       .withOutput ("Output", AudioChannelSet::stereo(), true)
-                     #endif
-                       ), m_Synth(keyboardState,48000)
+	: AudioProcessor(BusesProperties()
+#if ! JucePlugin_IsMidiEffect
+#if ! JucePlugin_IsSynth
+		.withInput("Input", AudioChannelSet::stereo(), true)
+#endif
+		.withOutput("Output", AudioChannelSet::stereo(), true)
+#endif
+	), m_Synth(keyboardState, 48000) 
 #endif
 {
+	attack = new AudioParameterFloat("Attack", "Attack", 0, 10, 5);
+	decay = new AudioParameterFloat("Decay", "Decay", 0, 10, 5);
+	sustain = new AudioParameterFloat("Sustain", "Sustain", 0, 1, 0.1f);
+	release = new AudioParameterFloat("Release", "Release", 0, 100, 1);
+	tone = new AudioParameterFloat("Tone", "Tone", 5000, 20000, 10000);
+	Res = new AudioParameterFloat("Res", "Res", 0, 1, 0.5f);
+	volume = new AudioParameterFloat("Volume", "Volume", 0, 1, 0.5f);
 
+	addParameter(attack);
+	addParameter(decay);
+	addParameter(sustain);
+	addParameter(release);
+	addParameter(tone);
+	addParameter(volume);
+	addParameter(Res);
 }
 
 KarplusStrongAuproAudioProcessor::~KarplusStrongAuproAudioProcessor()
@@ -138,10 +152,10 @@ void KarplusStrongAuproAudioProcessor::processBlock(AudioBuffer<float>& buffer, 
 	ScopedNoDenormals noDenormals;
 	auto totalNumInputChannels = getTotalNumInputChannels();
 	auto totalNumOutputChannels = getTotalNumOutputChannels();
-	envelope.attack = attack;
-	envelope.decay = decay;
-	envelope.sustain = sustain;
-	envelope.release = release;
+	envelope.attack = *attack;
+	envelope.decay = *decay;
+	envelope.sustain = *sustain;
+	envelope.release = *release;
 	// In case we have more outputs than inputs, this code clears any output
 	// channels that didn't contain input data, (because these aren't
 	// guaranteed to be empty - they may contain garbage).
@@ -154,6 +168,9 @@ void KarplusStrongAuproAudioProcessor::processBlock(AudioBuffer<float>& buffer, 
 	keyboardState.processNextMidiBuffer(midiMessages, bufferwrapper.startSample, bufferwrapper.numSamples, true);
 	m_Synth.addMidi(midiMessages);
 	m_Synth.getADSR(envelope);
+	m_Synth.setFreq(*tone);
+	m_Synth.setVolume(*volume);
+	m_Synth.setRes(*Res);
 	m_Synth.getNextAudioBlock(bufferwrapper);
 
 
