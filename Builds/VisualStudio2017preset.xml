@@ -1,0 +1,9 @@
+<Document>
+
+
+
+ <preset preset_name = "default" attack = "0" decay = "5" sustain = "2" release = "5" volume = "10" tone = "500" res = "0.5" ></preset>
+
+
+
+</Document>
