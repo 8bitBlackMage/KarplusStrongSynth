@@ -31,14 +31,15 @@ public:
 
 	}
 	~XML_Handler() {
-//		delete presets;
-//		delete BaseElement;
+		delete presets;
+
 	}
 	void loadPreset(KarplusStrongAuproAudioProcessor* processor, std::string presetName) {
-		if (BaseElement->getTagName() == String("preset")) {
+	
 			forEachXmlChildElementWithTagName(*BaseElement, presetElement, "preset")
 			{
-				if (presetElement->compareAttribute("Preset Name", presetName, true)) {
+					if (presetElement->compareAttribute("Preset Name", presetName, true))
+					{
 					*processor->attack = (presetElement->getDoubleAttribute("attack"));
 					*processor->decay = (presetElement->getDoubleAttribute("decay"));
 					*processor->sustain = (presetElement->getDoubleAttribute("sustain"));
@@ -46,10 +47,10 @@ public:
 					*processor->tone = (presetElement->getDoubleAttribute("tone"));
 					*processor->Res = (presetElement->getDoubleAttribute("res"));
 					*processor->volume = (presetElement->getDoubleAttribute("volume"));
-				}
+					}
 			}
 
-		}
+	
 
 
 	}
