@@ -13,33 +13,33 @@
 #include "../Source/PluginProcessor.h"
 
 
+
 class XML_Handler
 {
 public:
-	XML_Handler()
+	XML_Handler(): TempPresetFile(File::getCurrentWorkingDirectory().getFullPathName() + "preset.xml"), presets(TempPresetFile) 
 	{
-		File TempPresetFile(File::getCurrentWorkingDirectory().getFullPathName() + "preset.xml");
-		if (TempPresetFile.existsAsFile()) {
-			presets = new XmlDocument(TempPresetFile);
-			BaseElement = new XmlElement(*presets->getDocumentElement());
-		}
-		else {
-			DialogWindow error("error", Colour::fromRGB(1, 1, 1), true, false);
-			DBG("creating new file");
-			TempPresetFile.create();
-		}
 
 	}
-	~XML_Handler() {
-		delete presets;
+	~XML_Handler()
+	{
 
 	}
+
+
+
+
+
+
+
+
 	void loadPreset(KarplusStrongAuproAudioProcessor* processor, std::string presetName) {
-	
+		std::unique_ptr<XmlElement>BaseElement(presets.getDocumentElement());
 			forEachXmlChildElementWithTagName(*BaseElement, presetElement, "preset")
 			{
-					if (presetElement->compareAttribute("Preset Name", presetName, true))
+					if (presetElement->compareAttribute("preset_name", presetName, false))
 					{
+					DBG("loaded");
 					*processor->attack = (presetElement->getDoubleAttribute("attack"));
 					*processor->decay = (presetElement->getDoubleAttribute("decay"));
 					*processor->sustain = (presetElement->getDoubleAttribute("sustain"));
@@ -48,13 +48,16 @@ public:
 					*processor->Res = (presetElement->getDoubleAttribute("res"));
 					*processor->volume = (presetElement->getDoubleAttribute("volume"));
 					}
-			}
 
+			}
+			
 	
 
 
 	}
 	void SavePreset(KarplusStrongAuproAudioProcessor* processor, std::string presetName) {
+		std::unique_ptr<XmlElement>BaseElement(presets.getDocumentElement());
+		//XmlElement Element = SaveToElement(processor, presetName);
 		XmlElement * Element(new XmlElement("preset"));
 		Element->setAttribute("Preset Name", presetName);
 		Element->setAttribute("attack", *processor->attack);
@@ -64,12 +67,16 @@ public:
 		Element->setAttribute("tone", *processor->tone);
 		Element->setAttribute("res", *processor->Res);
 		Element->setAttribute("volume", *processor->volume);
+
+
+
 		BaseElement->addChildElement(Element);
 	}
 
 private:
-	XmlDocument * presets;
-	XmlElement * BaseElement;
-
+	File TempPresetFile;
+	XmlDocument presets;
+	//XmlElement  BaseElement;
+	friend class KarplusStrongAuproAudioProcessor;
 
 };

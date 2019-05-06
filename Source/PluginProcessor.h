@@ -12,6 +12,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "SynthVoice.h"
+#include "Core/XML_handler.h"
 class Controller;
 //==============================================================================
 /**
@@ -70,7 +71,7 @@ private:
 	SynthAudioSource m_Synth;
 	//float volume = 0.9;
 	ADSR::Parameters envelope;
-	 
+	friend class XML_Handler;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KarplusStrongAuproAudioProcessor)
 };
