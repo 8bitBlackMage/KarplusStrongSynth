@@ -10,6 +10,7 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "Core/XML_handler.h"
 
 //==============================================================================
 KarplusStrongAuproAudioProcessor::KarplusStrongAuproAudioProcessor()
@@ -193,9 +194,8 @@ void KarplusStrongAuproAudioProcessor::getStateInformation (MemoryBlock& destDat
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
-//	Statehandler.SavePreset(this, "State");
-
-
+	XmlElement tmp = StateManager->SaveToElement(this, "State");
+	copyXmlToBinary(tmp, destData);
 
 
 
@@ -206,9 +206,8 @@ void KarplusStrongAuproAudioProcessor::setStateInformation (const void* data, in
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
-//	Statehandler.loadPreset(this, "State");
-
-
+	std::shared_ptr<XmlElement> tmp( getXmlFromBinary(data, sizeInBytes));
+	StateManager->LoadFromElement(this, "State", *tmp);
 }
 
 //==============================================================================

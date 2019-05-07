@@ -140,7 +140,7 @@
 // juce_audio_plugin_client flags:
 
 #ifndef    JUCE_VST3_CAN_REPLACE_VST2
- //#define JUCE_VST3_CAN_REPLACE_VST2 1
+ #define   JUCE_VST3_CAN_REPLACE_VST2 0
 #endif
 
 #ifndef    JUCE_FORCE_USE_LEGACY_PARAM_IDS
@@ -311,7 +311,7 @@
 // Audio plugin settings..
 
 #ifndef  JucePlugin_Build_VST
- #define JucePlugin_Build_VST              0
+ #define JucePlugin_Build_VST              1
 #endif
 #ifndef  JucePlugin_Build_VST3
  #define JucePlugin_Build_VST3             1

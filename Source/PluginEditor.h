@@ -13,7 +13,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PluginProcessor.h"
 #include "Controller.h"
-#include "Core/XML_handler.h"
+struct XML_Handler;
 //==============================================================================
 /**
 */
@@ -27,6 +27,7 @@ public:
     void paint (Graphics&) override;
     void resized() override;
 
+	Slider attackS, decayS, sustainS, releaseS, volumeS, toneS, ResS;
 private:
 	friend class Controller;
 	
@@ -35,8 +36,9 @@ private:
     KarplusStrongAuproAudioProcessor& processor;
 	void SliderSetup(Slider * slider, int size);
 	MidiKeyboardComponent keyboardComponent;
-	Slider attackS, decayS, sustainS, releaseS, volumeS, toneS, ResS;
+	
+	ComboBox Presets;
 	Controller m_controller;
-	XML_Handler Storage;
+	XML_Handler * Storage;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KarplusStrongAuproAudioProcessorEditor)
 };

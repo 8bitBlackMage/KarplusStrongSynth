@@ -11,7 +11,7 @@
 #include "Controller.h"
 #include "PluginEditor.h"
 #include "PluginProcessor.h"
-
+#include "Core/XML_handler.h"
 Controller::Controller(KarplusStrongAuproAudioProcessor* Processor, KarplusStrongAuproAudioProcessorEditor * Editor):m_Processor(Processor), m_Editor(Editor)
 {
 	m_Editor->attackS.onValueChange = [this] 
@@ -52,6 +52,11 @@ Controller::Controller(KarplusStrongAuproAudioProcessor* Processor, KarplusStron
 	{
 		m_Editor->decayS.setTextBoxStyle(Slider::TextBoxAbove, true, 60, 40);
 		m_Editor->decayS.setSize(100, 160);
+	};
+	m_Editor->Presets.onChange = [this] {
+		int ID = m_Editor->Presets.ComboBox::getSelectedId();
+		String  preset = m_Editor->Presets.getItemText(ID);
+		m_Editor->Storage->loadPreset(m_Processor,m_Editor,preset.toStdString());
 	};
 	m_Editor->decayS.onDragEnd = [this]
 	{
