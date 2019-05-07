@@ -21,7 +21,7 @@ public:
 	XML_Handler() 
 	{
 		
-		TempPresetFile = File::getCurrentWorkingDirectory().getFullPathName() +("preset.xml");
+		TempPresetFile = File::getSpecialLocation(File::userDocumentsDirectory).getFullPathName()  +( "preset.xml");
 		if (TempPresetFile.existsAsFile()) {
 			presets = new XmlDocument(TempPresetFile);
 		}

@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <Document>
-  <preset PresetName="Default" attack="0" decay="5" sustain="0.5" release="5"
+  <preset PresetName="Default" attack="0" decay="5" sustain="2" release="5"
           tone="500" res="0.5" volume="10"/>
-  <preset PresetName="Test1" attack="5" decay="3" sustain="0.9" release="8"
-          tone="500" res="0.3" volume="10"/>
-  <preset PresetName="demo" attack="1" decay="2" sustain="0.4" release="6"
-          tone="800" res="0.3" volume="10"/>
-  <preset PresetName=" " attack="0" decay="0" sustain="0" release="0"
-          tone="0" res="0" volume="0"/>
 </Document>
