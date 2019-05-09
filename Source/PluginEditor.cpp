@@ -41,9 +41,11 @@ KarplusStrongAuproAudioProcessorEditor::KarplusStrongAuproAudioProcessorEditor(K
 	volumeS.setRange(0, 1, 0.1);
 	toneS.setRange(100, 10000, 1);
 	ResS.setRange(0, 1, 0.1);
+	Storage->loadPreset(&p,this,"default");
+	resetSlider();
 
 
-	//Storage->loadPreset(&p,this,"default");
+	
 }
 
 KarplusStrongAuproAudioProcessorEditor::~KarplusStrongAuproAudioProcessorEditor()
@@ -103,4 +105,15 @@ void KarplusStrongAuproAudioProcessorEditor::SliderSetup(Slider * slider, int si
 	
 	slider->setTextBoxStyle(Slider::NoTextBox, true, 0, 0);
 	addAndMakeVisible(slider);
+}
+
+
+void KarplusStrongAuproAudioProcessorEditor::resetSlider() {
+	attackS.setValue(*processor.attack);
+	decayS.setValue(*processor.decay);
+	sustainS.setValue(*processor.sustain);
+	releaseS.setValue(*processor.release);
+	volumeS.setValue(*processor.volume);
+	toneS.setValue(*processor.tone);
+	ResS.setValue(*processor.Res);
 }

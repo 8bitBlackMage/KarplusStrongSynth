@@ -127,13 +127,14 @@ public:
 					*processor->tone = (presetElement->getDoubleAttribute("tone"));
 					*processor->Res = (presetElement->getDoubleAttribute("res"));
 					*processor->volume = (presetElement->getDoubleAttribute("volume"));
-					editor->attackS.setValue(*processor->attack);
-					editor->decayS.setValue(*processor->decay);
-					editor->sustainS.setValue(*processor->sustain);
-					editor->releaseS.setValue(*processor->release);
-					editor->toneS.setValue(*processor->tone);
-					editor->ResS.setValue(*processor->Res);
-					editor->volumeS.setValue(*processor->volume);
+					//editor->attackS.setValue(*processor->attack);
+					//editor->decayS.setValue(*processor->decay);
+					//editor->sustainS.setValue(*processor->sustain);
+					//editor->releaseS.setValue(*processor->release);
+					//editor->toneS.setValue(*processor->tone);
+					//editor->ResS.setValue(*processor->Res);
+					//editor->volumeS.setValue(*processor->volume);
+					editor->resetSlider();
 					}
 
 			}

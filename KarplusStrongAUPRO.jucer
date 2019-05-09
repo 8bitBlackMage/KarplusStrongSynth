@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="ERhKBK" name="KarplusStrongAUPRO" projectType="audioplug"
               jucerVersion="5.4.3" pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn"
-              pluginManufacturer="8BitPanda" companyName="8bitPanda" pluginFormats="buildAU,buildStandalone,buildVST,buildVST3">
+              pluginManufacturer="8BitPanda" companyName="8bitPanda" pluginFormats="buildAU,buildStandalone,buildVST3">
   <MAINGROUP id="FPeTCg" name="KarplusStrongAUPRO">
     <GROUP id="{F8566B0F-273A-2870-C9EF-65EC1C4B5694}" name="Core">
       <FILE id="CYE8tD" name="DelayUnit.h" compile="0" resource="0" file="Source/Core/DelayUnit.h"/>

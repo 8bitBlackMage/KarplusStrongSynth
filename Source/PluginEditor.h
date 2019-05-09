@@ -26,7 +26,7 @@ public:
     //==============================================================================
     void paint (Graphics&) override;
     void resized() override;
-
+	void resetSlider();
 	Slider attackS, decayS, sustainS, releaseS, volumeS, toneS, ResS;
 private:
 	friend class Controller;
