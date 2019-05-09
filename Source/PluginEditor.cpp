@@ -21,7 +21,7 @@ KarplusStrongAuproAudioProcessorEditor::KarplusStrongAuproAudioProcessorEditor(K
 	Storage = new XML_Handler;
 	setSize(1024, 768);
 	keyboardComponent.setKeyWidth(30);
-	Storage->generatePresetList(&Presets);
+	Storage->generatePresetList(&Presets); 
 	Presets.setColour(0x1000b00,Colour::fromRGB(47, 0, 104));
 	Presets.setColour(0x1000c00, Colour::fromRGB(47, 0, 104));
 	Presets.setColour(0x1000f00, Colour::fromRGB(47, 0, 104));
@@ -57,10 +57,12 @@ KarplusStrongAuproAudioProcessorEditor::~KarplusStrongAuproAudioProcessorEditor(
 void KarplusStrongAuproAudioProcessorEditor::paint (Graphics& g)
 {
 	g.setFont(20.0f);
+    
 	auto size1 = getLocalBounds();
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll (Colour::fromRGB(75, 0, 130));
-	g.setColour(Colour::fromRGB(21, 0, 79));
+	g.setColour(Colour::fromRGB(255,255,255));
+    
 	g.drawText("tone", size1.removeFromLeft(250).removeFromTop(288), juce::Justification::centred, false);
 	g.drawText("volume", size1.removeFromRight(250).removeFromTop(288), juce::Justification::centred, false);
 	g.drawText("attack", getLocalBounds().removeFromTop(690).removeFromLeft(100), juce::Justification::centred, false);

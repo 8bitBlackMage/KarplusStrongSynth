@@ -119,7 +119,7 @@ public:
 			{
 					if (presetElement->compareAttribute("PresetName", presetName, false))
 					{
-					DBG("loaded ", presetName);
+			//		DBG("loaded ", presetName);
 					*processor->attack = (presetElement->getDoubleAttribute("attack"));
 					*processor->decay = (presetElement->getDoubleAttribute("decay"));
 					*processor->sustain = (presetElement->getDoubleAttribute("sustain"));
