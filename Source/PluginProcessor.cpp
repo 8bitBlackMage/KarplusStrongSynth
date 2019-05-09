@@ -31,7 +31,7 @@ KarplusStrongAuproAudioProcessor::KarplusStrongAuproAudioProcessor()
 	release = new AudioParameterFloat("Release", "Release", 0, 100, 1);
 	tone = new AudioParameterFloat("Tone", "Tone", 5000, 20000, 10000);
 	Res = new AudioParameterFloat("Res", "Res", 0, 1, 0.5f);
-	volume = new AudioParameterFloat("Volume", "Volume", 0, 1, 0.5f);
+	volume = new AudioParameterFloat("Volume", "Volume", 0, 5, 0.5f);
 
 	addParameter(attack);
 	addParameter(decay);

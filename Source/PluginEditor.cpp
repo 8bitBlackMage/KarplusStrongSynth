@@ -38,7 +38,7 @@ KarplusStrongAuproAudioProcessorEditor::KarplusStrongAuproAudioProcessorEditor(K
 	decayS.setRange(0, 10, 0.1);
 	sustainS.setRange(0, 1, 0.01);
 	releaseS.setRange(0, 10, 0.1);
-	volumeS.setRange(0, 1, 0.1);
+	volumeS.setRange(0, 5, 0.1);
 	toneS.setRange(100, 10000, 1);
 	ResS.setRange(0, 1, 0.1);
 	Storage->loadPreset(&p,this,"default");
